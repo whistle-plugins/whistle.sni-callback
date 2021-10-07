@@ -8,17 +8,11 @@ const srcDir = path.resolve(rootDir, 'src');
 
 module.exports = {
   entry: {
-    admin: path.resolve(srcDir, 'admin/index'),
-    select: path.resolve(srcDir, 'select/index'),
-    capture: path.resolve(srcDir, 'capture/index'),
-    network: path.resolve(srcDir, 'admin/network'),
-    button: path.resolve(srcDir, 'button/index'),
+    index: path.resolve(srcDir, 'index'),
   },
   output: {
-    filename: ({ chunk: { name, hash } }) => {
-      return name === 'button' ? 'button.js' : `${name}.${hash}.js`;
-    },
     path: path.resolve(rootDir, 'public'),
+    filename: '[name].[hash].js',
   },
   resolve: {
     extensions: ['.js', '.jsx', 'json'],
@@ -68,34 +62,10 @@ module.exports = {
   devtool: 'none',
   plugins: [
     new HtmlWebpackPlugin({
-      filename: 'select.html',
-      chunks: ['select'],
-      template: path.resolve(srcDir, 'pages/select.html'),
+      filename: 'index.html',
+      title: '自定义证书',
+      chunks: ['index'],
+      template: path.resolve(srcDir, 'config/template.html'),
     }),
-    new HtmlWebpackPlugin({
-      filename: 'admin.html',
-      chunks: ['admin'],
-      title: 'Nohost-管理平台',
-      className: 'vbox',
-      inject: true,
-      template: path.resolve(srcDir, 'pages/template.html'),
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'capture.html',
-      chunks: ['capture'],
-      title: 'Nohost-抓包调试',
-      inject: true,
-      template: path.resolve(srcDir, 'pages/template.html'),
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'network.html',
-      chunks: ['network'],
-      title: 'Nohost-查看抓包',
-      inject: true,
-      template: path.resolve(srcDir, 'pages/template.html'),
-    }),
-    new CopyPlugin([
-      { from: path.resolve(srcDir, 'assets'), to: path.resolve(rootDir, 'public') },
-    ]),
   ],
 };
