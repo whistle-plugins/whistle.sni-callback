@@ -8,22 +8,6 @@
     "dev": "rimraf public && webpack --config ./src/config/webpack.dev.js -w",
     "dist": "rimraf public && webpack --config ./src/config/webpack.prod.js"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "lint-staged": {
-    "*.{js,jsx,tsx,ts}": [
-      "eslint --fix --quiet",
-      "git add"
-    ],
-    "*.{css,scss,less,sss,json,html,yml,graphql,gql}": [
-      "prettier --write",
-      "git add"
-    ]
-  },
   "dependencies": {
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
@@ -32,8 +16,6 @@
     "koa-static": "^5.0.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^12.0.1",
-    "@commitlint/config-conventional": "^12.0.1",
     "antd": "^3.25.3",
     "babel-core": "^6.26.3",
     "babel-eslint": "^7.2.3",
@@ -51,10 +33,6 @@
     "eslint-config-imweb": "^1.0.1",
     "file-loader": "^4.2.0",
     "html-webpack-plugin": "^3.2.0",
-    "husky": "^3.0.1",
-    "less": "^3.10.3",
-    "less-loader": "^5.0.0",
-    "lint-staged": "^10.5.4",
     "prop-types": "^15.5.10",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
