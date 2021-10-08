@@ -1,7 +1,6 @@
 const path = require('path');
 /* eslint-disable import/no-extraneous-dependencies */
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CopyPlugin = require('copy-webpack-plugin');
 
 const rootDir = process.cwd();
 const srcDir = path.resolve(rootDir, 'src');
@@ -23,6 +22,19 @@ module.exports = {
         test: /\.jsx?$/,
         use: [
           'babel-loader',
+        ],
+      },
+      {
+        test: /\.less$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'less-loader',
+            options: {
+              javascriptEnabled: true,
+            },
+          },
         ],
       },
       {
