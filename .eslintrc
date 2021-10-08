@@ -1,3 +1,6 @@
 {
-  "extends": "eslint-config-imweb"
+  "extends": "eslint-config-imweb",
+  "rules": {
+    "react/jsx-filename-extension": 0
+  }
 }
