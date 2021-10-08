@@ -9,14 +9,7 @@ function getTimeoutPromise() {
 }
 
 function toJson(res) {
-  return res.json().then((data) => {
-    if (data.retcode !== 0) {
-      const err = new Error(data.retmsg || '未知错误');
-      err.retcode = data.retcode;
-      throw err;
-    }
-    return data;
-  });
+  return res.json();
 }
 
 function fetchData(url, data) {
@@ -32,5 +25,7 @@ function fetchData(url, data) {
 }
 
 export const uploadCerts = () => {};
-export const getCertsInfo = () => {};
+export const getCertsInfo = () => {
+  return fetchData('cgi-bin/info');
+};
 export const removeCert = () => {};

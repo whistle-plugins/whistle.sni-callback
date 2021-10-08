@@ -12,21 +12,17 @@ function readFile(file) {
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.readAsText(file);
-    reader.onload = function () {
-      resolve(reader.result);
-    };
+    reader.onload = () => resolve(reader.result);
   });
 }
 
 function parseCerts(data) {
-  const files = {};
-  let invalidList;
-  Object.keys(data).forEach((domain) => {
-    const cert = data[domain];
+  const now = Date.now();
+  Object.keys(data).forEach((filename) => {
+    const cert = data[filename];
     const startDate = new Date(cert.notBefore);
     const endDate = new Date(cert.notAfter);
     let status = '✓';
-    const now = Date.now();
     let isInvalid;
     if (startDate.getTime() > now) {
       isInvalid = true;
@@ -35,36 +31,15 @@ function parseCerts(data) {
       isInvalid = true;
       status = 'Expired';
     }
-    const { filename } = cert;
-    let item = files[filename];
-    if (!item) {
-      item = {
-        key: filename,
-        filename,
-        mtime: cert.mtime,
-        domain: [cert.domain],
-        validity: `${startDate.toLocaleString()} ~ ${endDate.toLocaleString()}`,
-        status,
-        isInvalid,
-      };
-      files[filename] = item;
-      if (isInvalid) {
-        invalidList = invalidList || [];
-        invalidList.push(filename);
-      }
-    } else {
-      item.domain.push(cert.domain);
-    }
+    cert.validity = `${startDate.toLocaleString()} ~ ${endDate.toLocaleString()}`;
+    cert.status = status;
+    cert.isInvalid = isInvalid;
+    cert.filename = filename;
   });
   return {
-    data: Object.keys(files).sort((a, b) => {
-      return files[a].mtime > files[b].mtime ? -1 : 1;
-    }).map(file => {
-      file = files[file];
-      file.domain = file.domain.join(', ');
-      return file;
-    }),
-    invalidList,
+    data: Object.keys(data).sort((a, b) => {
+      return data[a].mtime > data[b].mtime ? -1 : 1;
+    }).map(filename => data[filename]),
   };
 }
 
@@ -85,10 +60,10 @@ class CertList extends Component {
       },
       {
         title: '域名列表',
-        dataIndex: 'domain',
-        key: 'domain',
+        dataIndex: 'dnsName',
+        key: 'dnsName',
         render: (_, record) => {
-          return <span style={record.status !== '✓' ? HIGHLIGHT : null}>{record.domain}</span>;
+          return <span style={record.status !== '✓' ? HIGHLIGHT : null}>{record.dnsName}</span>;
         },
       },
       {
@@ -141,22 +116,13 @@ class CertList extends Component {
     });
   }
 
-  updateCertsInfo = () => {
-    getCertsInfo((data) => {
-      if (!data) {
-        return message.error('证书加载失败，请求稍后重试!');
-      }
+  updateCertsInfo = async () => {
+    try {
+      const data = await getCertsInfo();
       this.setState(parseCerts(data));
-    });
-  }
-
-  clearAllInvalidCerts = () => {
-    removeCert(JSON.stringify({ filename: this.state.invalidList }), (data) => {
-      if (!data) {
-        return message.error('操作异常，请稍后重试！');
-      }
-      this.updateCertsInfo();
-    });
+    } catch (e) {
+      message.error('证书加载失败，请稍后重试!');
+    }
   }
 
   formatFiles = (fileList = []) => {
@@ -224,28 +190,16 @@ class CertList extends Component {
   };
 
   render() {
-    const { hide } = this.props;
-
     return (
       <div className="fill vbox cert-list">
         <div className="action-bar cert-list-bar">
-          {
-            this.state.invalidList ? (
-              <Popconfirm
-                title="确定清除所有不可用证书？"
-                onConfirm={this.clearAllInvalidCerts}
-              >
-                <Button type="danger" className="clear-valid-certs">一键清除不可用证书</Button>
-              </Popconfirm>
-            ) : null
-          }
           <div className="upload-wrapper">
             <input id="upload-input" type="file" accept=".crt,.key" multiple="multiple" onChange={this.handleChange} />
             <Button className="upload-btn" type="primary"><Icon type="upload" />上传证书</Button>
           </div>
         </div>
         <div className="fill p-content">
-          <Table columns={this.columns} dataSource={this.state.data} pagination={false} />
+          <Table rowKey="filename" columns={this.columns} dataSource={this.state.data} pagination={false} />
         </div>
       </div>
     );

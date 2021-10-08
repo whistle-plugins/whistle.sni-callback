@@ -7,7 +7,7 @@ const srcDir = path.resolve(rootDir, 'src');
 
 module.exports = {
   entry: {
-    index: path.resolve(srcDir, 'index'),
+    index: ['babel-polyfill', path.resolve(srcDir, 'index')],
   },
   output: {
     path: path.resolve(rootDir, 'public'),
