@@ -108,16 +108,16 @@ class CertList extends Component {
     this.updateCertsInfo();
   }
 
-  removeCert = (filename) => {
-    removeCert(JSON.stringify({ filename }), (data) => {
-      if (!data) {
-        return message.error('操作异常，请稍后重试！');
-      }
-      this.updateCertsInfo();
-    });
+  removeCert = async (filename) => {
+    try {
+      const data = await removeCert({ filename });
+      this.setState(parseCerts(data));
+    } catch (e) {
+      message.error('操作异常，请稍后重试！');
+    }
   }
 
-  updateCertsInfo = async () => {
+  async componentDidMount() {
     try {
       const data = await getCertsInfo();
       this.setState(parseCerts(data));
@@ -141,7 +141,7 @@ class CertList extends Component {
       }
       const suffix = RegExp.$1;
       name = name.slice(0, -4);
-      if (!name || /[^\w*.()-]/.test(name)) {
+      if (!name || /[^\w.()%[]（）-]/.test(name)) {
         message.error('证书名称存在非法字符！');
         return;
       }
@@ -176,15 +176,14 @@ class CertList extends Component {
       });
     });
 
-    Promise.all(pendingList).then(() => {
-      uploadCerts(files, (data) => {
-        if (data.ec === 0) {
-          message.success('上传成功');
-          this.updateCertsInfo();
-        } else {
-          message.error('上传失败，请稍后重试！');
-        }
-      });
+    Promise.all(pendingList).then(async () => {
+      try {
+        const data = await uploadCerts(files);
+        message.success('上传成功');
+        this.setState(parseCerts(data));
+      } catch (e) {
+        message.error('上传失败，请稍后重试！');
+      }
     }, () => {
       message.error('上传失败，请稍后重试！');
     });

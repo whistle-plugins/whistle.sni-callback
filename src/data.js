@@ -30,4 +30,6 @@ export const uploadCerts = (files) => {
 export const getCertsInfo = () => {
   return fetchData('cgi-bin/info');
 };
-export const removeCert = () => {};
+export const removeCert = (data) => {
+  return fetchData('cgi-bin/remove', data);
+};
