@@ -24,7 +24,9 @@ function fetchData(url, data) {
   ]).then(toJson);
 }
 
-export const uploadCerts = () => {};
+export const uploadCerts = (files) => {
+  return fetchData('cgi-bin/upload', files);
+};
 export const getCertsInfo = () => {
   return fetchData('cgi-bin/info');
 };

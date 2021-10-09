@@ -35,6 +35,7 @@ function parseCerts(data) {
     cert.status = status;
     cert.isInvalid = isInvalid;
     cert.filename = filename;
+    cert.dnsName = cert.dnsName.join(', ');
   });
   return {
     data: Object.keys(data).sort((a, b) => {
@@ -176,7 +177,7 @@ class CertList extends Component {
     });
 
     Promise.all(pendingList).then(() => {
-      uploadCerts(JSON.stringify(files), (data) => {
+      uploadCerts(files, (data) => {
         if (data.ec === 0) {
           message.success('上传成功');
           this.updateCertsInfo();
