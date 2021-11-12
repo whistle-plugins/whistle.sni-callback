@@ -104,10 +104,6 @@ class CertList extends Component {
     ];
   }
 
-  componentDidMount() {
-    this.updateCertsInfo();
-  }
-
   removeCert = async (filename) => {
     try {
       const data = await removeCert({ filename });
