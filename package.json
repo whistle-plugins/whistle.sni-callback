@@ -1,12 +1,15 @@
 {
   "name": "whistle.sni-callback",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Custom HTTPS certificate",
   "scripts": {
     "lint": "eslint *.js lib src",
     "lintfix": "eslint --fix *.js lib src",
     "dev": "rimraf public && webpack --config ./src/config/webpack.dev.js -w",
     "dist": "rimraf public && webpack --config ./src/config/webpack.prod.js"
+  },
+  "whistleConfig": {
+    "inheritAuth": true
   },
   "dependencies": {
     "koa": "^2.7.0",
