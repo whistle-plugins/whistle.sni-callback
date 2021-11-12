@@ -1,6 +1,6 @@
 {
   "name": "whistle.sni-callback",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Custom HTTPS certificate",
   "scripts": {
     "lint": "eslint *.js lib src",
