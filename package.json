@@ -8,6 +8,9 @@
     "dev": "rimraf public && webpack --config ./src/config/webpack.dev.js -w",
     "dist": "rimraf public && webpack --config ./src/config/webpack.prod.js"
   },
+  "whistleConfig": {
+    "inheritAuth": true
+  },
   "dependencies": {
     "koa": "^2.7.0",
     "koa-bodyparser": "^4.2.1",
